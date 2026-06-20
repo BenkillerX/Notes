@@ -1,8 +1,8 @@
 import Note from "../model/Notes.js";
 
-export async function getNotes(req, res) {
+export async function getNotes(_, res) {
     try {
-        const notes = await Note.find()
+        const notes = await Note.find().sort({ createdAt: -1 })
         res.json(notes)
     } catch (error) {
         console.error("Error Fetching Notes", error);
@@ -22,6 +22,7 @@ export async function createNote(req, res) {
         newNote,
         message: "Note created successfully"
     });
+   
     } catch (error) {
         console.log("Error Occured", error);
     }

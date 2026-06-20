@@ -1,0 +1,24 @@
+.env
+.backend/node_modules# Ignore environment files
+.env
+backend/.env
+frontend/.env
+
+# Ignore node_modules in both frontend and backend
+backend/node_modules
+frontend/node_modules
+
+# Ignore build/dist outputs
+backend/dist
+frontend/dist
+frontend/build
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
