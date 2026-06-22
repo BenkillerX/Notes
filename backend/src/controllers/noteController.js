@@ -4,10 +4,23 @@ export async function getNotes(_, res) {
     try {
         const notes = await Note.find().sort({ createdAt: -1 })
         res.json(notes)
+       
     } catch (error) {
         console.error("Error Fetching Notes", error);
         
     }
+}
+export async function getSingleNote(req,res) {
+    const {id} = req.params
+    if(!id){
+       return res.status(400).json({message:"Missing ID"})
+    } 
+
+    const singleNote = await Note.findById(id)
+    if(!singleNote){
+        return res.status(404).json({message:"Note Not Found"})
+    }
+    res.status(200).json(singleNote)
 }
 export async function createNote(req, res) {
     const {title, content} = req.body
@@ -22,7 +35,6 @@ export async function createNote(req, res) {
         newNote,
         message: "Note created successfully"
     });
-   
     } catch (error) {
         console.log("Error Occured", error);
     }
@@ -40,6 +52,7 @@ export async function updateNote(req, res) {
             return
         }
         res.status(200).json(updatedNote)
+
     } catch (error) {
         console.log("Error Occured", error);
     }

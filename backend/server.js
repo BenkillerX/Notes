@@ -13,6 +13,5 @@ app.use(express.json())
 app.use('/api/notes', router)
 connectDB().then(()=>{
 app.listen(PORT,()=>{
-console.log(`Server active on ${PORT}`)})
+console.log(`Server running on ${PORT}`)})
 })
- 

@@ -1,7 +1,8 @@
-import axios, { AxiosError } from "axios"
+import { AxiosError } from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
+import api from "../config/api"
 
 const CreateNote = () => {
   const [title, setTitle] = useState<string>("")
@@ -13,9 +14,9 @@ const CreateNote = () => {
     e.preventDefault()
     try {
         setLoading(true)
-        await axios.post(`http://localhost:5000/api/notes/add`, {title, content}, {timeout:5000});
+        await api.post(`http://localhost:5000/api/notes/add`, {title, content}, {timeout:5000});
         toast.success("Note created successfully")
-        setTitle("")
+        setTitle("") 
         setContent("")
         navigate("/")
     } catch (err) {
@@ -32,7 +33,7 @@ const CreateNote = () => {
       // server responded with an error status
       toast.error(`Error: ${error.response.data?.message || "Failed to add note"}`)
     }
-        console.log(error, "Errir Adding Note");
+        console.log(error, "Error Adding Note");
     }finally{
         setLoading(false)
     }

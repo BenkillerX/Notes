@@ -1,8 +1,8 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Loading from './Loading'
 import NoteCard from './NoteCard'
 import Error from './Error'
+import api from '../config/api'
 
 interface Notes{
     _id:string,
@@ -18,7 +18,7 @@ const HomePage = () => {
             try {
             setLoading(true)
             setError(null)
-            const notes = await axios.get('http://localhost:5000/api/notes/', {timeout:5000});
+            const notes = await api.get('http://localhost:5000/api/notes/', {timeout:5000});
             if (notes.status !== 200) {
                 console.log("Could Not Get Notes");
                 
@@ -41,7 +41,7 @@ const HomePage = () => {
     {error && <Error message={error}/>}
    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
   {notes.map((note) => (
-    <NoteCard note={note} key={note._id} />
+    <NoteCard note={note} key={note._id} setNotes={setNotes}/>
   ))}
 </section>
 
