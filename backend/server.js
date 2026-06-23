@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import { connectDB } from './src/config/db.js'
 import router from './src/routes/notesRoutes.js'
 import cors from 'cors'
+import userRouter from './src/routes/userRoutes.js'
 dotenv.config()
 const PORT = process.env.PORT
 const app = express()
@@ -11,6 +12,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/notes', router)
+app.use('/api/auth', userRouter)
 connectDB().then(()=>{
 app.listen(PORT,()=>{
 console.log(`Server running on ${PORT}`)})
