@@ -36,7 +36,7 @@ const NoteDetails = () => {
     e.preventDefault()
     console.log({ title, content })
     try {
-    await api.put(`/update/${id}`, { title, content })  
+    await api.put(`notes/update/${id}`, { title, content })  
     toast.success("Note updated successfully")
     setTitle("")
     setContent("")

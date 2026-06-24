@@ -24,7 +24,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, setNotes }) => {
     e.stopPropagation()
   try {
     if (!id) return 
-  await api.delete(`http://localhost:5000/api/notes/delete/${id}`)
+  await api.delete(`notes/delete/${id}`)
   setNotes(prev => prev.filter(n => n._id !== id))
     toast.success("Note deleted Successfully")
   } catch (error) {

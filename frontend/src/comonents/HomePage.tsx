@@ -18,7 +18,7 @@ const HomePage = () => {
             try {
             setLoading(true)
             setError(null)
-            const notes = await api.get('http://localhost:5000/api/notes/', {timeout:5000});
+            const notes = await api.get('notes/', {timeout:5000});
             if (notes.status !== 200) {
                 console.log("Could Not Get Notes");
                 

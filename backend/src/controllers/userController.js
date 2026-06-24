@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import validator from 'validator'
 
 function createToken(_id) {
-   return jwt.sign({userId:_id}, process.env.SECRET_KEY, {expiresIn:"15m"})
+   return jwt.sign({userId:_id}, process.env.SECRET_KEY, {expiresIn:"3d"})
 }
 export async function createUser(req, res) {
     const {email, password} = req.body;
@@ -16,11 +16,11 @@ export async function createUser(req, res) {
             throw Error("Enter a valid Email")
         }
         if(!validator.isStrongPassword(password)){
-            throw Error("Enter a valid Password")
+            throw Error("Enter a Strong Password")
         }
         const matchingEmail = await User.findOne({email})
         if (matchingEmail) {
-            return res.status(400).json({message:"Email Already Exists "})
+            throw Error("Email Already Exists ")
         }
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser  = new User({email, password:hashedPassword})
@@ -28,7 +28,7 @@ export async function createUser(req, res) {
     const token = createToken(newUser._id)
     res.status(201).json({message:"User created successfully", user:newUser.email, token})
     } catch (error) {
-        res.json({error:error.message})
+        res.status(400).json({error:error.message})
     }
     
 }

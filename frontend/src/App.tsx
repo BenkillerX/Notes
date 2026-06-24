@@ -4,6 +4,8 @@ import NavBar from "./comonents/NavBar"
 import CreateNote from "./comonents/CreateNote"
 import NoteDetails from "./comonents/NoteDetails"
 import { ToastContainer } from "react-toastify"
+import SignUp from "./comonents/SignUp"
+import Login from "./comonents/Login"
 
 function App() {
 
@@ -25,6 +27,8 @@ function App() {
         <Route path="/" element={<HomePage/>}/>
         <Route path="/add" element={<CreateNote/>}/>
         <Route path="/noteDetails/:id" element={<NoteDetails/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/login" element={<Login/>}/>
       </Routes>
     </div>
   )
