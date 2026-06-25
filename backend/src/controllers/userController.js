@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import validator from 'validator'
 
 function createToken(_id, email) {
-   return jwt.sign({userId:_id, email}, process.env.SECRET_KEY, {expiresIn:"3d"})
+   return jwt.sign({userId:_id, email}, process.env.SECRET_KEY, {expiresIn:"30m"})
 }
 export async function createUser(req, res) {
     const {email, password} = req.body;
@@ -51,14 +51,13 @@ export async function loginUser(req, res) {
     if (!isMatch) {
         return res.status(401).json({message:"invalid credentials"})
     }
-    const token = createToken(user._id)
+    const token = createToken(user._id, email)
     
     res.status(200).json({
       message: "Login successful",
-      user: { id: user._id, email: user.email },
       token
     });
     } catch (error) {
-        res.json({error:error.message})
+        res.status(500).json({message:error.message})
     }
 }

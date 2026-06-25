@@ -4,12 +4,14 @@ import api from '../config/api'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useAuth } from '../hooks/AuthContext'
 
 const SignUp = () => {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [showPassword, setShowPassword] = useState<boolean>(false)
     const navigate = useNavigate()
+    const {login} = useAuth()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !password) {
@@ -19,7 +21,7 @@ const SignUp = () => {
    try {
   const res = await api.post(`/auth/register`, { email, password }) 
   const token = res.data.token
-  localStorage.setItem('token', token)
+  login(token)
     toast.success(res.data.message)
     setEmail("")
     setPassword("")

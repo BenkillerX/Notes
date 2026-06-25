@@ -12,6 +12,6 @@ export function authMiddleWear(req, res , next) {
         req.user = decode
         next()
     } catch (error) {
-      return res.status(401).json({error:"Invalid Token"})
+      return res.status(401).json({message:"Invalid Token"})
     }
 }

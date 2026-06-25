@@ -39,7 +39,7 @@ export async function createNote(req, res) {
     })
   } catch (error) {
     console.error("Error Occurred while creating note:", error)
-    return res.status(500).json({ error: "Server error creating note" })
+    return res.status(500).json({ message: "Server error creating note" })
   }
 }
 

@@ -3,6 +3,7 @@ import Loading from './Loading'
 import NoteCard from './NoteCard'
 import Error from './Error'
 import api from '../config/api'
+import { toast } from 'react-toastify'
 
 interface Notes{
     _id:string,
@@ -21,10 +22,9 @@ const HomePage = () => {
             const token = localStorage.getItem('token')
             const notes = await api.get('notes/', {headers:{authorization:`Bearer ${token}`}, timeout:5000});
             if (notes.status !== 200) {
-                console.log("Could Not Get Notes");
+                toast.error("Could Not Get Notes");
                 
             }
-            console.log(notes.data);
             setNotes(notes.data)
             } catch (error) {
                 console.log('Error Fetching Notes', error);

@@ -1,9 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/AuthContext'
 
-const NavBar = () => {
-  function logout() {
-  localStorage.removeItem("token")
-  window.location.href = "/login" 
+interface Navprops{
+  hastoken:boolean
+}
+const NavBar = ({hastoken}:Navprops) => {
+  const {logout} = useAuth()
+  const navigate = useNavigate()
+  function signout() {
+    logout()
+ navigate("/login") 
 }
 
   return ( 
@@ -17,7 +23,15 @@ const NavBar = () => {
 
       {/* Navigation Links */}
       <div className="flex items-center space-x-6">
-        <Link 
+        {hastoken ? (
+          <>
+        <button onClick={signout}>
+        LogOut
+        </button>
+        </>
+        ) : (
+          <>
+           <Link 
           to="/signup" 
           className="text-white font-medium hover:text-gray-200 transition-colors"
         >
@@ -29,9 +43,10 @@ const NavBar = () => {
         >
           Login
         </Link>
-        <button onClick={logout}>
-        LogOut
-        </button>
+        </>
+        )}
+      
+       
         <Link 
           to="/add" 
           className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-200 font-medium"

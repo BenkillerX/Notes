@@ -7,52 +7,47 @@ import { ToastContainer } from "react-toastify"
 import SignUp from "./comonents/SignUp"
 import Login from "./comonents/Login"
 import {jwtDecode} from "jwt-decode"
+import { useEffect, useState } from "react"
 
 interface TokenPayload {
   userId: string
-  role?: string
-  email?: string
+  role: string
+  email: string
   exp: number
   iat: number
 }
 function App() {
-  function isLoggedIn() {
-  const token = localStorage.getItem("token")
-  if (!token) return false
+  
+  const [hasToken, setHasToken] = useState<boolean>(false);
 
-  try {
-    const decoded: TokenPayload = jwtDecode(token)
-    const now = Date.now() / 1000
-    return decoded.exp > now   // check if token is still valid
-  } catch {
-    return false
-  }
-}
+   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setHasToken(false);
+      return;
+    }
+    try {
+      const decoded: TokenPayload = jwtDecode(token);
+      const now = Date.now() / 1000;
+      setHasToken(decoded.exp > now);
+    } catch {
+      setHasToken(false);
+    }
+  }, []);
 
-const loggedIn = isLoggedIn()
+
   return (
-    <div className="">
-      <NavBar/>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+    <div>
+      <NavBar hastoken={hasToken} />
       <Routes>
-        <Route path="/" element={loggedIn ? <HomePage/>: <Login/>}/>
-        <Route path="/add" element={loggedIn ? <CreateNote/> : <Login/>}/>
-        <Route path="/noteDetails/:id" element={loggedIn ?  <NoteDetails/>: <Login/>}/>
-        <Route path="/signup" element={<SignUp/>}/>
-        <Route path="/login" element={<Login/>}/>
+        <Route path="/" element={hasToken ? <HomePage /> : <Login />} />
+        <Route path="/add" element={hasToken ? <CreateNote /> : <Login />} />
+        <Route path="/noteDetails/:id" element={hasToken ? <NoteDetails /> : <Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
-  )
+  );
 }
 
 export default App

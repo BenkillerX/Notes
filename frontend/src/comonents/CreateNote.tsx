@@ -1,4 +1,3 @@
-import { AxiosError } from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
@@ -7,7 +6,6 @@ import api from "../config/api"
 const CreateNote = () => {
   const [title, setTitle] = useState<string>("")
   const [content, setContent] = useState<string>("")
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,21 +18,10 @@ const CreateNote = () => {
         setTitle("") 
         setContent("")
         navigate("/")
-    } catch (err) {
-        const error = err as AxiosError<{ message: string }>
-      if (error.code === "ECONNABORTED") {
-      // timeout error
-      toast.error("Request timed out. Please check your connection.")
-      setError("Request timed out. Please check your connection.")
-    } else if (!error.response) {
-      // no response from server (network issue)
-      toast.error("Network error. Please check your internet connection.")
-      setError("Network error. Please check your internet connection.")
-    } else {
-      // server responded with an error status
-      toast.error(`Error: ${error.response.data?.message || "Failed to add note"}`)
-    }
-        console.log(error, "Error Adding Note");
+    } catch (err:any) {
+       const serverMessage = err.response?.data?.message || "Adding Failed"
+        toast.error(serverMessage)
+          console.error(serverMessage)
     }finally{
         setLoading(false)
     }
@@ -76,11 +63,7 @@ const CreateNote = () => {
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
             />
           </div>
-          {error && (
-        <p className="text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-2 text-sm font-medium">
-                {error}
-            </p>
-            )}
+         
           {/* Submit Button */}
           <button
             type="submit"
