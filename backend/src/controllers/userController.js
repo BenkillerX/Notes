@@ -3,8 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken" 
 import validator from 'validator'
 
-function createToken(_id) {
-   return jwt.sign({userId:_id}, process.env.SECRET_KEY, {expiresIn:"3d"})
+function createToken(_id, email) {
+   return jwt.sign({userId:_id, email}, process.env.SECRET_KEY, {expiresIn:"3d"})
 }
 export async function createUser(req, res) {
     const {email, password} = req.body;
@@ -25,19 +25,17 @@ export async function createUser(req, res) {
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser  = new User({email, password:hashedPassword})
     await newUser.save()
-    const token = createToken(newUser._id)
+    const token = createToken(newUser._id, email,)
     res.status(201).json({message:"User created successfully", user:newUser.email, token})
     } catch (error) {
         res.status(400).json({error:error.message})
     }
-    
 }
 export async function loginUser(req, res) {
     const {email, password} = req.body
     if (!email || !password) {
          return res.status(400).json({message:"Previde all Credentials"});
     }  
-
     try {
          if (!validator.isEmail(email)) {
             throw Error("Enter a valid Email")

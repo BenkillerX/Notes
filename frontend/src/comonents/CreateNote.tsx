@@ -14,7 +14,8 @@ const CreateNote = () => {
     e.preventDefault()
     try {
         setLoading(true)
-        await api.post(`http://localhost:5000/api/notes/add`, {title, content}, {timeout:5000});
+        const token = localStorage.getItem('token')
+        await api.post(`http://localhost:5000/api/notes/add`, {title, content}, {headers:{authorization:`Bearer ${token}`},timeout:5000});
         toast.success("Note created successfully")
         setTitle("") 
         setContent("")

@@ -18,7 +18,8 @@ const HomePage = () => {
             try {
             setLoading(true)
             setError(null)
-            const notes = await api.get('notes/', {timeout:5000});
+            const token = localStorage.getItem('token')
+            const notes = await api.get('notes/', {headers:{authorization:`Bearer ${token}`}, timeout:5000});
             if (notes.status !== 200) {
                 console.log("Could Not Get Notes");
                 
@@ -40,10 +41,15 @@ const HomePage = () => {
     {loading && <Loading/>}
     {error && <Error message={error}/>}
    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-  {notes.map((note) => (
-    <NoteCard note={note} key={note._id} setNotes={setNotes}/>
-  ))}
+  {notes.length === 0 ? (
+    <p className="text-gray-500 col-span-full text-center">No notes currently</p>
+  ) : (
+    notes.map((note) => (
+      <NoteCard note={note} key={note._id} setNotes={setNotes}/>
+    ))
+  )}
 </section>
+
 
     </div>
   )

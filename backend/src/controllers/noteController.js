@@ -1,13 +1,11 @@
 import Note from "../model/Notes.js";
 
-export async function getNotes(_, res) {
+export async function getNotes(req, res) {
     try {
-        const notes = await Note.find().sort({ createdAt: -1 })
+        const notes = await Note.find({userId: req.user.userId}).sort({ createdAt: -1 })
         res.json(notes)
-       
     } catch (error) {
         console.error("Error Fetching Notes", error);
-        
     }
 }
 export async function getSingleNote(req,res) {
@@ -23,27 +21,33 @@ export async function getSingleNote(req,res) {
     res.status(200).json(singleNote)
 }
 export async function createNote(req, res) {
-    const {title, content} = req.body
-    if (!title || !content) {
-        res.status(500).json({message:"Erroor creating Note"})
-    }
-    try {
-        const newNote = new Note({title, content})
-        await newNote.save()
-        res.status(201).json({
-        success: true,
-        newNote,
-        message: "Note created successfully"
-    });
-    } catch (error) {
-        console.log("Error Occured", error);
-    }
+  const { title, content } = req.body
+  const { userId } = req.user
+
+  if (!title || !content) {
+    return res.status(400).json({ message: "Provide title and content" })
+  }
+
+  try {
+    const newNote = new Note({ title, content, userId })
+    await newNote.save()
+
+    return res.status(201).json({
+      success: true,
+      newNote,
+      message: "Note created successfully"
+    })
+  } catch (error) {
+    console.error("Error Occurred while creating note:", error)
+    return res.status(500).json({ error: "Server error creating note" })
+  }
 }
+
 export async function updateNote(req, res) {
     const {title, content} = req.body;
     const {id} = req.params;
     if(!title || ! content || !id){
-        res.status(400).json({message:"provide necessary content"});
+     return  res.status(400).json({message:"provide necessary content"});
     }
     try {
         const updatedNote = await Note.findByIdAndUpdate(id, {title, content}, {new:true, runValidators: true })

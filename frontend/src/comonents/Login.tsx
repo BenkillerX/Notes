@@ -1,18 +1,32 @@
 import React, { useState } from 'react'
+import api from '../config/api'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
-const SignUp = () => {
+const Login = () => {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate()
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !password) {
       setError("Please fill in all fields")
       return
     }
     setError(null)
-    // Handle sign-up logic here
+    try {
+      const res = await api.post(`/auth/login`, {email, password})
+      const token = res.data.token
+      localStorage.setItem('token', token)
+      toast.success(res.data.message)
+      setEmail("")
+      setPassword("")
+      navigate("/")
+    } catch (error) {
+      toast.error("Error Logging In")
+      console.error(error)
+    }
     console.log("Email:", email, "Password:", password)
   }
 
@@ -69,4 +83,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default Login

@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
 
 const NavBar = () => {
+  function logout() {
+  localStorage.removeItem("token")
+  window.location.href = "/login" 
+}
+
   return ( 
     <nav className="flex items-center justify-between px-6 py-4 bg-blue-600 shadow-md">
       {/* Logo */}
@@ -24,6 +29,9 @@ const NavBar = () => {
         >
           Login
         </Link>
+        <button onClick={logout}>
+        LogOut
+        </button>
         <Link 
           to="/add" 
           className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-200 font-medium"

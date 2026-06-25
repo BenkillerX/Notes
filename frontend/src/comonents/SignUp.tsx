@@ -19,7 +19,7 @@ const SignUp = () => {
    try {
   const res = await api.post(`/auth/register`, { email, password }) 
   const token = res.data.token
-  localStorage.setItem('token', JSON.stringify(token))
+  localStorage.setItem('token', token)
     toast.success(res.data.message)
     setEmail("")
     setPassword("")

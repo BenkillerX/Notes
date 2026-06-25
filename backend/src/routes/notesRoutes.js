@@ -1,11 +1,12 @@
 import express from 'express'
 import { createNote, deleteNote, getNotes, getSingleNote, updateNote } from '../controllers/noteController.js'
+import { authMiddleWear } from '../middlewear/authMiddleWear.js'
 
 const router = express.Router()
 
-router.get('/', getNotes)
+router.get('/', authMiddleWear, getNotes)
 router.get('/:id', getSingleNote)
-router.post('/add', createNote)
+router.post('/add',authMiddleWear ,createNote)
 router.put('/update/:id', updateNote)
 router.delete('/delete/:id', deleteNote)
 
