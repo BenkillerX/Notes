@@ -1,15 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/AuthContext'
+import { toast } from 'react-toastify'
 
 interface Navprops{
   hastoken:boolean
+  userMail:string | null
 }
-const NavBar = ({hastoken}:Navprops) => {
+const NavBar = ({hastoken, userMail}:Navprops) => {
   const {logout} = useAuth()
   const navigate = useNavigate()
-  function signout() {
-    logout()
- navigate("/login") 
+function signout() {
+  logout();
+  toast.info("You have been logged out.");
+  navigate("/login");
 }
 
   return ( 
@@ -23,11 +26,16 @@ const NavBar = ({hastoken}:Navprops) => {
 
       {/* Navigation Links */}
       <div className="flex items-center space-x-6">
+        <span>{hastoken ? (userMail):("Guest")}</span>
         {hastoken ? (
           <>
-        <button onClick={signout}>
-        LogOut
-        </button>
+       <button 
+        onClick={signout} 
+        className="text-white font-medium hover:text-gray-200 transition-colors"
+      >
+        Log Out
+      </button>
+
         </>
         ) : (
           <>
@@ -47,12 +55,15 @@ const NavBar = ({hastoken}:Navprops) => {
         )}
       
        
-        <Link 
-          to="/add" 
-          className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-200 font-medium"
-        >
-          Create Note
-        </Link>
+       {hastoken && (
+      <Link 
+        to="/add" 
+        className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-200 font-medium"
+      >
+        Create Note
+      </Link>
+    )}
+
       </div>
     </nav>
   )

@@ -1,25 +1,28 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import api from "../config/api"
+import type { AxiosError } from "axios"
 
 const CreateNote = () => {
   const [title, setTitle] = useState<string>("")
   const [content, setContent] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
+  const [file, setFile] = useState<File| null>(null)
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
         setLoading(true)
         const token = localStorage.getItem('token')
-        await api.post(`http://localhost:5000/api/notes/add`, {title, content}, {headers:{authorization:`Bearer ${token}`},timeout:5000});
+        await api.post(`/add`, {title, content}, {headers:{authorization:`Bearer ${token}`},timeout:5000});
         toast.success("Note created successfully")
         setTitle("") 
         setContent("")
         navigate("/")
-    } catch (err:any) {
-       const serverMessage = err.response?.data?.message || "Adding Failed"
+    } catch (err) {
+      const error = err as AxiosError<{message:string}>
+       const serverMessage = error.response?.data?.message || "Adding Failed"
         toast.error(serverMessage)
           console.error(serverMessage)
     }finally{
@@ -27,7 +30,27 @@ const CreateNote = () => {
     }
     console.log({ title, content })
   }
+const handlefileInput = (e:React.ChangeEvent<HTMLInputElement>)=>{
+  if (e.target.files) {
+    setFile(e.target.files[0])
+  }
+}
+const handleUpload = async ()=>{
+  if (!file) {
+    return
+  }
+  const formData = new FormData();
+    formData.append("image", file);
 
+    try {
+      const res = await api.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Uploaded:", res.data);
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+}
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
@@ -63,7 +86,11 @@ const CreateNote = () => {
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
             />
           </div>
-         
+         {/* File Image Input */}
+         <div>
+          <input type="file" accept="image/*" onChange={handlefileInput}/>
+          <button onClick={handleUpload}>Upload</button>
+         </div>
           {/* Submit Button */}
           <button
             type="submit"

@@ -81,3 +81,6 @@ export async function deleteNote(req, res) {
     res.status(500).json({ error: "Server error while deleting note" });
   }
 }
+export function uploadImage() {
+  
+}

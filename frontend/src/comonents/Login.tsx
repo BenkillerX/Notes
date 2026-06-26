@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useAuth } from '../hooks/AuthContext';
+import { AxiosError } from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState<string>("")
@@ -18,9 +19,7 @@ const Login = () => {
       setError("Please fill in all fields")
       return
     }
-
     setError(null)
-
     try {
     const res = await api.post(`/auth/login`, {email, password})
       const token = res.data.token
@@ -29,9 +28,10 @@ const Login = () => {
       setEmail("")
       setPassword("")
       navigate("/")
-    } catch (err:any) {
+    } catch (err) {
+      const error = err as AxiosError<{message:string}>;
       // Axios puts server response under err.response
-      const serverMessage = err.response?.data?.message || "Login failed"
+      const serverMessage = error.response?.data?.message || "Login failed"
       toast.error(serverMessage)
       console.error(serverMessage)
     }
