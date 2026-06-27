@@ -3,7 +3,6 @@ import { FiEdit, FiTrash } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import api from '../config/api'
-
 interface Note {
   _id: string
   title: string
@@ -11,7 +10,6 @@ interface Note {
 }
 
 type SetNotes = React.Dispatch<React.SetStateAction<Note[]>>
-
 
 interface NoteCardProps {
   note: Note
